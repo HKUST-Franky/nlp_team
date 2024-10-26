@@ -1,5 +1,5 @@
 import openai
-import gpt
+import llm.gpt as gpt
 
 # 替换为你的 OpenAI API 密钥
 key2set = 'ILOVEYOUGPT'
