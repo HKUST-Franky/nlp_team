@@ -58,5 +58,44 @@ def is_valid_format(data):
         else:
             return False
     return True    
-data = load_file_jsonl()
-save_file_output(data)
+
+#
+mark_table = ['<T>']
+def processing_mark(text, mark):
+    # 使用标记分割文本
+    start_tag = mark
+    end_tag = mark.replace('<', '</')
+
+    parts = []
+    current_part = ''
+    inside_tag = False
+
+    i = 0
+    while i < len(text):
+        if text.startswith(start_tag, i):
+            if current_part:
+                parts.append(current_part.strip())
+                current_part = ''
+            inside_tag = True
+            i += len(start_tag)
+        elif text.startswith(end_tag, i):
+            inside_tag = False
+            i += len(end_tag)
+        else:
+            if not inside_tag:
+                current_part += text[i]
+            i += 1
+
+    if current_part:
+        parts.append(current_part.strip())
+
+    return parts
+
+# 示例使用
+text = "hello <T>shit</T> fuck you"
+result = processing_mark(text, '<T>')
+print(result) 
+
+#try
+#data = load_file_jsonl()
+#save_file_output(data)
