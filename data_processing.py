@@ -61,40 +61,34 @@ def is_valid_format(data):
 
 #
 mark_table = ['<T>']
-def processing_mark(text, mark):
-    # 使用标记分割文本
-    start_tag = mark
-    end_tag = mark.replace('<', '</')
 
+def fuck_off_marks(text, mark):
+    mark_close = "</" + mark[1:-1] + ">"
     parts = []
-    current_part = ''
-    inside_tag = False
+    start = 0
 
-    i = 0
-    while i < len(text):
-        if text.startswith(start_tag, i):
-            if current_part:
-                parts.append(current_part.strip())
-                current_part = ''
-            inside_tag = True
-            i += len(start_tag)
-        elif text.startswith(end_tag, i):
-            inside_tag = False
-            i += len(end_tag)
-        else:
-            if not inside_tag:
-                current_part += text[i]
-            i += 1
-
-    if current_part:
-        parts.append(current_part.strip())
+    while True:
+        index = text.find(mark, start)
+        if index == -1:
+            break
+        before_start = text[:index]  # 标记前的部分
+        start = index + len(mark)  # 更新起始位置
+        
+        index_close = text.find(mark_close, start)
+        if index_close == -1:
+            print("no corresponding close mark!")
+            break
+        middle = text[index + len(mark) : index_close]
+        after_end = text[index_close + len(mark_close):]  # 标记后的部分
+        parts.append((before_start, middle, after_end))  # 添加切分结果
+        start = index_close + len(mark_close)  # 更新起始位置以查找下一个标记
 
     return parts
 
-# 示例使用
-text = "hello <T>shit</T> fuck you"
-result = processing_mark(text, '<T>')
-print(result) 
+#try
+#text = "shit <T>shit </T> shit"
+#results = fuck_off_marks(text, "<T>")
+#print(results)
 
 #try
 #data = load_file_jsonl()
