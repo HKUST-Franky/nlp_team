@@ -15,6 +15,13 @@ qwen = qwen.Qwen()
 prompt_user = "hello hello hello hello hello hello hello hello hello hello"
 prompt_system = "I will input you some text, add <T> and </T> in this text. you can randomly add it, but keep in mind they should be in pair and </T> should be after <t> all the time."
 
+#I want to use my own mark like <mask>, how to do it?
+#Just use m.Mark("mask") to make one.
+# mask = Mark("mask")
+# mask.s == <mask>
+# mask.e == </mask>
+
+
 #get response by asking
 #it's a str
 #you can create a new class based on qwen or gpt to make your class and override the ask method to achieve your goal.
@@ -44,6 +51,7 @@ def transform_text_list_with_mark_into_output_file(input_cor:str, text_lst: List
     dp.save_file_output(output_lst)
 
 #do it!
+# Here you should use your own mark! not m.T
 transform_text_list_with_mark_into_output_file(prompt_user, repeat_meow, m.T)
 
 
