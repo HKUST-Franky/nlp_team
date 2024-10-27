@@ -1,28 +1,27 @@
 from openai import OpenAI
+from llm import ChatLLM
+from typing import override
+import unittest
 
-gpt_api_key = 'YOUR_API_KEY'
-model = "gpt-3.5-turbo"  # 或者使用 gpt-4，如果你有权限
 
-client = OpenAI(api_key=gpt_api_key)
+class GPT(ChatLLM):
+    def __init__(self, model_specific:str = "gpt-3.5-turbo", api_key:str = "TBD"):
+        super().__init__("ChatGPT")
+        self.api_key= api_key
+        self.client = OpenAI(api_key=self.api_key)
+        self.specific_model = model_specific 
 
-def set_open_ai_key(key):
-    global gpt_api_key
-    gpt_api_key = key
+    @override
+    def ask(self, input_user:str = "Hello", input_system:str = "You are a Helpful assistant.")-> str:
+        return super()._ask(input_user, input_system)
+
+
+#Test
+class TestExample(unittest.TestCase):
+    def test_gpt(self):
+        llm:ChatLLM = GPT()
+        res = llm.ask()
+        print(res)
     
-def set_open_ai_model(model2set):
-    global model
-    model = model2set
-
-def get_chatgpt_response(prompt, model_selected = model):
-    try:
-        response = client.chat.completions.create(model=model_selected,  
-        messages=[
-            {"role": "user", "content": prompt}
-        ])
-        return response.choices[0].message.content
-    except Exception as e:
-        print(f"Error: {e}")
-        return None
-
-toprint = get_chatgpt_response("how are you?")
-print(f"response:{toprint}")
+if __name__ == "__main__":
+    unittest.main()
