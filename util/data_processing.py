@@ -16,14 +16,21 @@ class Input(TypedDict):
     model_output_logits: str
     model_output_tokens: str
 
+class SoftLabel(TypedDict):
+    start: int 
+    prob: float
+    end: int
+
+class HardLabel(TypedDict):
+    start: int
+    end: int
 
 # This is the output labels, including hard and soft label
-class Label(TypedDict):
-    soft_labels: str 
-    hard_labels: str
-
+class Labels(TypedDict):
+    soft_labels: List[SoftLabel]
+    hard_labels: List[HardLabel]
 # This is the output, contain the Input and Label
-class Output(Input, Label):
+class Output(Input, Labels):
     pass
 
 

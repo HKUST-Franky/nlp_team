@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, TypedDict
 import unittest
+from .data_processing import HardLabel
 
 
 # To register a Mark: T = Mark('T')
@@ -42,10 +43,29 @@ def fuck_off_marks(text: str, mark: Mark)-> List[str]:
             break
         middle = text[index + len(mark_start) : index_close]
         after_end = text[index_close + len(mark_close):]  # 标记后的部分
-        parts.extend([before_start, middle, after_end])  # 添加切分结果
+        parts.extend([before_start, '(', middle, ')', after_end])  # 添加切分结果
         start = index_close + len(mark_close)  # 更新起始位置以查找下一个标记
 
     return parts
+
+#get starts & ends
+def starts_and_ends(text: str, trunc_mark:str)-> List[HardLabel]:
+    hard_label_lst = []
+    text_segment = fuck_off_marks(text, trunc_mark)
+    start = 0
+    new_label = HardLabel()
+    for item in text_segment:
+        if item == "(":
+            new_label["start"] = start
+        elif item ==")":
+            new_label["end"] = start 
+            hard_label_lst.append(new_label)
+            new_label = HardLabel()
+        else:
+            start += len(item)
+    return hard_label_lst
+     
+     
 
 # this is domain of test_function
 class TestExample(unittest.TestCase):
@@ -55,14 +75,14 @@ class TestExample(unittest.TestCase):
         print(mark_table[0])
 
     #@unittest.skip("skip test_fuck_off")
-    def test_fuck_off(self):
-        text = "shit <T>shit </T> shit"
-        should_be = ["shit ", "shit ", " shit"]
-        results = fuck_off_marks(text, mark_table[0])
-        print(results)
+    def test_starts_and_ends(self):
+        plain_text = "shit shit ? shit"
+        text = "shit <T>shit ?</T> shit"
+        should_be = [{"start": 5, "end": 10}]
+        results = starts_and_ends(text, mark_table[0])
+        print(plain_text[results[0]["start"]: results[0]["end"]])
         print(f"should be{should_be}")
-        if results == should_be:
-            print("Match")
+    
 
 if __name__ == "__main__":
     unittest.main()
