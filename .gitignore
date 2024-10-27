@@ -1,7 +1,4 @@
-output/output_20241027_015946.jsonl
-output/output_20241027_021622.jsonl
-output/output_20241027_021633.jsonl
-llm/__pycache__/__init__.cpython-312.pyc
-llm/__pycache__/genetic.cpython-312.pyc
 .gitignore
-llm/__pycache__/qwen.cpython-312.pyc
+output/
+llm/__pycache__/
+util/__pycache__/
