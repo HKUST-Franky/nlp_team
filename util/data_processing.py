@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, TypedDict
 import unittest
 
-data_file_path = "./data/mushroom.hi-val.v2.jsonl"
+data_file_path = "./input_data/mushroom.hi-val.v2.jsonl"
 output_path = "./output/"
 # to constrain the type of the dic
 # This is data input
@@ -28,7 +28,7 @@ class HardLabel(TypedDict):
 # This is the output labels, including hard and soft label
 class Labels(TypedDict):
     soft_labels: List[SoftLabel]
-    hard_labels: List[HardLabel]
+    hard_labels: List[int]
 # This is the output, contain the Input and Label
 class Output(Input, Labels):
     pass
