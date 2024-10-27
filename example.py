@@ -81,7 +81,7 @@ plain_text_lst = []
 for meow in meow_lst:
     for mark in not_mask_lst:
         meow = m.plain_text(meow, mark)
-        plain_text_lst.append(meow)
+    plain_text_lst.append(meow)
 
 #put then into output file
 # corresponding input, list of output and the corresponding mark
@@ -107,7 +107,7 @@ def transform_text_list_with_mark_into_output_file(input_cor: List[str], text_ls
 
 #do it!
 # Here you should use your own mark! not m.T
-transform_text_list_with_mark_into_output_file(prompt_user, meow_lst, mask)
+transform_text_list_with_mark_into_output_file(prompt_user, plain_text_lst, mask)
 
 
 
