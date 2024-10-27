@@ -37,7 +37,7 @@ class Output(Input, Labels):
 # jsonl file to a dictionary.
 # input the filepath, defaulted to be ./data/xxx.jsonl
 # no check for the suffix of filename, should pay attention to .jsonl
-def load_file_jsonl(file :str = data_file_path) -> str:
+def load_file_jsonl(file :str = data_file_path) -> List[Input]:
     data = []
     try:
         with open(file, mode='r', encoding='utf-8') as file:
