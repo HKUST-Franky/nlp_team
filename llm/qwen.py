@@ -1,4 +1,4 @@
-from llm import ChatLLM 
+from .genetic import ChatLLM 
 from openai import OpenAI
 import unittest
 from typing import override
