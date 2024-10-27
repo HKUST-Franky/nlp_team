@@ -1,6 +1,7 @@
 from typing import List
 import unittest
 
+
 # To register a Mark: T = Mark('T')
 # To use it: T.s == "<T>"
 # To use it: T.e == "</T>"
@@ -15,6 +16,7 @@ class Mark():
     @property
     def e(self):
         return f"</{self.value}>"
+
 
 T = Mark('T')
 mark_table = [T]
