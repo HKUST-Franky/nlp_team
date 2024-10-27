@@ -1,6 +1,7 @@
 from llm import qwen
-import util.mark as mark
+import util.mark as m
 import util.data_processing as dp
+from typing import List
 
 
 #step1. choose a model, you can specify api key, specific model i.e. qwen-plus etc.
@@ -12,13 +13,21 @@ prompt_system = "I will input you some text, add <T> and </T> in this text. you 
 
 #get response by asking
 meow = qwen.ask(prompt_user, prompt_system)
-print(meow)
-hard_labels = mark.starts_and_ends(meow, mark.T)
-labels = dp.Labels(soft_labels=dp.SoftLabel(), hard_labels=hard_labels)
-input = dp.Input(model_input=prompt_user, model_output_text=meow)
-output_one = dp.Output(input | labels)
-dp.save_file_output([output_one])
 
+repeat_meow = [meow for i in range(100)]
+#put then into output file
+def transform_text_list_with_mark_into_output_file(input_cor:str, text_lst: List[str], mark:m.Mark):
+    output_lst = []
+    for text in text_lst:
+        hard_labels = m.starts_and_ends(text, m.T)
+        #TODO I dont know how to deal with the fucking soft labels, just blank
+        labels = dp.Labels(soft_labels=dp.SoftLabel(), hard_labels=hard_labels)
+        input = dp.Input(model_input=input_cor, model_output_text=text)
+        output_one = dp.Output(input | labels)
+        output_lst.append(output_one)
+    dp.save_file_output(output_lst)
+
+transform_text_list_with_mark_into_output_file(prompt_user, repeat_meow, m.T)
 
 
 

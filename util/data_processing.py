@@ -55,9 +55,16 @@ def load_file_jsonl(file :str = data_file_path) -> str:
     return data
 
 # just_used in save_file_output
+timestampe_record = datetime.now().strftime("%Y%m%d_%H%M%S")
+count = 0
 def _default_output_filename()-> str:
+    global count
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # Format: YYYYMMDD_HHMMSS
-    return f"{output_path}output_{timestamp}.jsonl"  # Add timestamp to filename
+    if timestampe_record == timestamp:
+        count += 1
+    else:
+        count = 0
+    return f"{output_path}output_{timestamp}_{count}.jsonl"  # Add timestamp to filename
 
 # This is saving
 def save_file_output(record: List[Output], output_file:str = _default_output_filename()):
