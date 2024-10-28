@@ -59,11 +59,13 @@ timestampe_record = datetime.now().strftime("%Y%m%d_%H%M%S")
 count = 0
 def _default_output_filename()-> str:
     global count
+    global timestampe_record
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # Format: YYYYMMDD_HHMMSS
     if timestampe_record == timestamp:
         count += 1
     else:
         count = 0
+        timestampe_record = timestamp
     return f"{output_path}output_{timestamp}_{count}.jsonl"  # Add timestamp to filename
 
 # This is saving
