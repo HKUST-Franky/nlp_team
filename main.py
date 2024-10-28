@@ -7,6 +7,7 @@ import random
 
 
 qwen = qwen.Qwen()
+model_name = "qwen"
 prompt_system = """Given a passage, identify any entity, relation, contradictory, subjective, unverifiable, or invented errors in the passage. Mark each erroneous segment by enclosing it within the corresponding <error></error> tags. If there are no errors, return the passage with no tags. Any identified errors should be highlighted using the tag <error> without altering the original text. Below are the error definitions of the error types.
 
 Definitions:
@@ -62,7 +63,7 @@ def do(file_name):
             output_lst.append(output_one)
         #put them into a file!, you can specific the file_name actually
         timestampe = datetime.now().strftime("%Y%m%d_%H%M%S")
-        dp.save_file_output(output_lst, "./output/" + file_name + timestampe + str(random.randint(0, 1000)) + ".jsonl") 
+        dp.save_file_output(output_lst, "./output/" + model_name + "_" + file_name + timestampe + str(random.randint(0, 1000)) + ".jsonl") 
 
     #do it!
     # Here you should use your own mark! not m.T
