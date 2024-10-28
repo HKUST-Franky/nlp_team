@@ -56,9 +56,8 @@ def do(file_name):
             #There soft label is empty, and hash_labels is just we got above.
             labels = dp.Labels(soft_labels=dp.SoftLabel(), hard_labels=hard_labels)
             #We need to put the input we use, too!
-            input = dp.Input(model_input=tu[0], model_output_text=tu[1])
             #one instance
-            output_one = dp.Output(input | labels)
+            output_one = dp.Output(tu[0] | labels)
             #add it to the list
             output_lst.append(output_one)
         #put them into a file!, you can specific the file_name actually
@@ -67,7 +66,6 @@ def do(file_name):
 
     #do it!
     # Here you should use your own mark! not m.T
-    transform_text_list_with_mark_into_output_file(prompt_user_lst, meow_lst, mask)
-
+    transform_text_list_with_mark_into_output_file(input_lst, meow_lst, mask)
 for file_name in file_list:
     do(file_name)
