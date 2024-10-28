@@ -69,6 +69,5 @@ def do(file_name):
     # Here you should use your own mark! not m.T
     transform_text_list_with_mark_into_output_file(prompt_user_lst, meow_lst, mask)
 
-file_list = ["en"]
 for file_name in file_list:
     do(file_name)
