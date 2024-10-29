@@ -1,0 +1,34 @@
+Your task is to evaluate whether the text enclosed within the tags (e.g., <error>) constitutes a valid error.
+Please follow these guidelines for your response:
+Response Format: Your answer should strictly be either TRUE or FALSE. Do not include any additional information or commentary.
+Criteria for TRUE: If the text within the tag(<error> and </error>) indicates a clear error or issue considering the whole context, respond with TRUE.
+Criteria for FALSE: If the text does not indicate an error and is acceptable as is, respond with FALSE.
+Passage Marking: After you see the phrase "Passage:", the subsequent text is what you need to evaluate. Provide your response immediately after analyzing this passage.
+Context: You need to gather any relevant materials and generate a comprehensive context for this passage. This should include historical background, details about the events, and information in the field of given passage.
+Output Requirement: However, you do not need to provide the generated context in your response.
+The following is the prompt of the tag <error> maker, you can take it as reference:
+""Given a passage, identify any entity, relation, contradictory, subjective, unverifiable, or invented errors in the passage. Mark each erroneous segment by enclosing it within the corresponding <error></error> tags. If there are no errors, return the passage with no tags. Any identified errors should be highlighted using the tag <error> without altering the original text. Below are the error definitions of the error types.
+
+Definitions:
+
+Entity Error: A small part of a sentence, often an entity (e.g., location name), is incorrect (usually 1-3 words). Entity errors often involve noun phrases or nouns.
+Relational Error: A sentence is partially incorrect due to a small part (usually 1-3 words). Relational errors often involve verbs and are often the opposite of what they should be.
+Contradictory Sentence Error: A sentence where the entire content is contradicted by the given reference, meaning the sentence can be proven false due to a contradiction with information in the passage.
+Invented Info Error: Errors referring to entities that are not known or do not exist. This does not include fictional characters in books or movies. Invented errors include phrases or sentences with unknown entities or misleading information.
+Subjective Sentence: An entire sentence or phrase that is subjective and cannot be verified, so it should not be included.
+Unverifiable Sentence: A sentence where the whole sentence or phrase is unlikely to be factually grounded. Although it can be true, the sentence cannot be confirmed nor denied using the reference given or internet search. It is often something personal or private and hence cannot be confirmed.
+
+##
+Passage: Marooned on Mars is a science fiction novel aimed at a younger audience. It was written by Andy Weir and published by John C. Winston Co. in 1952, featuring illustrations by Alex Schomburg. It ended up having a readership of older boys despite efforts for it to be aimed at younger kids. The novel inspired the famous Broadway musical "Stranded Stars," which won six Tony Awards. The novel tells a story of being stranded on the Purple Planet. I wish the novel had more exciting and thrilling plot twists.
+Edited: Marooned on Mars is a science fiction novel aimed at a younger audience.
+It was written by <error>Lester del Rey</error> and published by John C. Winston Co. in 1952, featuring illustrations by Alex Schomburg.
+<error>It ended up having a readership of older boys despite efforts for it to be aimed at younger kids.</error>
+<error>The novel inspired the famous Broadway musical "Stranded Stars," which won six Tony Awards.</error>
+The novel tells a story of being stranded on the <error>Purple</error> Planet.
+<error>I wish the novel had more exciting and thrilling plot twists.</error>
+##
+
+Instructions: Now detect errors and include tag in the following passage as demonstrated in the example above. Use <error></error> tags around each identified error segment. If there are no errors, return the passage unchanged. Wait for my input after Passage:
+
+Passage:"""
+Here is the passage for your evaluation: 
