@@ -1,6 +1,7 @@
 from typing import List, TypedDict
 import unittest
 from .data_processing import HardLabel
+import difflib
 
 
 # To register a Mark: T = Mark('T')
@@ -60,7 +61,6 @@ def plain_text(text_with_mark:str, mark:Mark)->str:
 def starts_and_ends(text: str, trunc_mark:Mark)-> List[HardLabel]:
     hard_label_lst = []
     text_segment = fuck_off_marks(text, trunc_mark)
-    print(text_segment)
     start = 0
     new_label = HardLabel()
     for item in text_segment:
@@ -74,7 +74,27 @@ def starts_and_ends(text: str, trunc_mark:Mark)-> List[HardLabel]:
             start += len(item)
     return hard_label_lst
      
-     
+
+def find_char_differences(string1, string2):
+    # 使用 ndiff 来比较两个字符串，按字符比较
+    diff = difflib.ndiff(string1, string2)
+
+    # 记录不同之处
+    differences = []
+
+    for i, change in enumerate(diff):
+        if change.startswith('- ') or change.startswith('+ '):
+            differences.append((i, change))
+
+    return differences
+
+def add_and_sub_cha(modify_lst, text:str):
+    text_copy = text[:]
+    for (pos, change) in modify_lst:
+        add_or_sub = chagne[0]
+        ch = change[2]
+        text_copy 
+
 
 # this is domain of test_function
 class TestExample(unittest.TestCase):
@@ -83,12 +103,14 @@ class TestExample(unittest.TestCase):
         print(mark_table[0].s)
         print(mark_table[0].e)
         print(mark_table[0])
-
+    
+    
+    @unittest.skip("test")
     def test_fuck_off(self):
         res = fuck_off_marks("shit <T>shit ?</T> <T>shit</T>", T)
         print(res)
         
-    #@unittest.skip("skip test_fuck_off")
+    @unittest.skip("skip test_fuck_off")
     def test_starts_and_ends(self):
         plain_text = "shit shit ? shit"
         text = "shit <T>shit ?</T> <T>shit</T>"
