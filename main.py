@@ -44,6 +44,13 @@ def do(file_name):
     meow_lst = []
     for prompt_user in prompt_user_lst:
         meow = qwen.ask(prompt_user, prompt_system)
+        plain_meow = m.plain_text(meow, mask)
+        while len(plain_meow) != len(prompt_user):
+            log_info = f"log info: original input:{prompt_user}, gpt output: {meow}"
+            print(log_info)
+            to_add = "MY SWEET HEART, PLEASE DO NOT CHANGE THE ORIGINAL TEXT, JUST ADD TAGS, PLEASE. CAN YOU DO THAT AGAIN!"
+            to_add_2 = "Should be like something original text <error>original text</error> original text"
+            meow = qwen.ask(prompt_user + log_info + to_add, prompt_system)        
         meow_lst.append(meow)
 
     def transform_text_list_with_mark_into_output_file(input_cor: List[str], text_lst: List[str], mark:m.Mark):
@@ -55,7 +62,10 @@ def do(file_name):
             hard_labels = m.starts_and_ends(tu[1], mark)
             #TODO I dont know how to deal with the fucking soft labels, just blank
             #There soft label is empty, and hash_labels is just we got above.
-            labels = dp.Labels(soft_labels=dp.SoftLabel(), hard_labels=hard_labels)
+            soft_labels = []
+            for hard_label in hard_labels:
+                soft_labels.append(dp.SoftLabel({"start": hard_label[0], "prob": 1.0, "end":hard_label[1]}))
+            labels = dp.Labels(soft_labels=soft_labels, hard_labels=hard_labels)
             #We need to put the input we use, too!
             #one instance
             output_one = dp.Output(tu[0] | labels)

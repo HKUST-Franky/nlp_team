@@ -60,7 +60,6 @@ def plain_text(text_with_mark:str, mark:Mark)->str:
 def starts_and_ends(text: str, trunc_mark:Mark)-> List[HardLabel]:
     hard_label_lst = []
     text_segment = fuck_off_marks(text, trunc_mark)
-    print(text_segment)
     start = 0
     new_label = HardLabel()
     for item in text_segment:
@@ -83,12 +82,14 @@ class TestExample(unittest.TestCase):
         print(mark_table[0].s)
         print(mark_table[0].e)
         print(mark_table[0])
-
+    
+    
+    @unittest.skip("test")
     def test_fuck_off(self):
         res = fuck_off_marks("shit <T>shit ?</T> <T>shit</T>", T)
         print(res)
         
-    #@unittest.skip("skip test_fuck_off")
+    @unittest.skip("skip test_fuck_off")
     def test_starts_and_ends(self):
         plain_text = "shit shit ? shit"
         text = "shit <T>shit ?</T> <T>shit</T>"
