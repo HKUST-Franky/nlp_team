@@ -7,8 +7,10 @@ import random
 
 
 qwen = qwen.Qwen()
+#TODO add this to class
 model_name = "qwen"
-prompt_system = """Given a passage, identify any entity, relation, contradictory, subjective, unverifiable, or invented errors in the passage. Mark each erroneous segment by enclosing it within the corresponding <error></error> tags. If there are no errors, return the passage with no tags. Any identified errors should be highlighted using the tag <error> without altering the original text. Below are the error definitions of the error types.
+#TODO modify this to use the file in prompt dir
+prompt_fixed = """Given a passage, identify any entity, relation, contradictory, subjective, unverifiable, or invented errors in the passage. Mark each erroneous segment by enclosing it within the corresponding <error></error> tags. If there are no errors, return the passage with no tags. Any identified errors should be highlighted using the tag <error> without altering the original text. Below are the error definitions of the error types.
 
 Definitions:
 
@@ -33,50 +35,93 @@ Instructions: Now detect errors and include tag in the following passage as demo
 
 Passage:
 """
+# system_prompt
+prompt_system = "You are a helpful agent."
+
+#prompt for redo
+prompt_redo = """
+MY SWEET HEART, PLEASE DO NOT CHANGE THE ORIGINAL TEXT, JUST ADD TAGS, PLEASE. CAN YOU DO THAT AGAIN!
+Your output should be like: original text <error>original text</error> original text
+No extra text is needed. Just give me the answer.
+It should be exactly the same, including spaces
+This is the original:" + prompt_user
+"""
+
+#TODO modify this to read a list of file in a dir
 file_list = ["ar", "de", "en", "es", "fi", "fr", "hi", "it", "sv", "zh"]
 
-# I want to sleep. I dont want to waste more time!
-def do(file_name):
-    input_lst = dp.load_file_jsonl("./input_data/" + file_name + ".jsonl")
-    prompt_user_lst = list(input["model_output_text"] for input in input_lst)
-    mask = m.Mark("error")
 
+def load(file_name):
+    #load file
+    input_dir_path = "./input_data/" 
+    suffix = ".jsonl"
+    full_file_name = input_dir_path + file_name + suffix
+    input_lst = dp.load_file_jsonl(full_file_name)
+    
+    return input_lst
+    #get prompt
+
+def ask_it(prompt_user_lst, mask):
     meow_lst = []
     for prompt_user in prompt_user_lst:
-        meow = qwen.ask(prompt_user, prompt_system)
-        plain_meow = m.plain_text(meow, mask)
-        while len(plain_meow) != len(prompt_user):
-            log_info = f"log info: original input:{prompt_user}, gpt output: {meow}"
+        ask = lambda x : qwen.ask(prompt_fixed + x, prompt_system)
+        meow = ask(prompt_user)
+        cnt = 0
+        while m.plain_text(meow, mask) != prompt_user:
+            #TODO modify this log info
+            log_info = f"log info: original input:{prompt_user}, gpt output: {m.plain_text(meow, mask)}\n"
+            log_info += f"difference: {m.find_char_differences(prompt_user, m.plain_text(meow, mask) )}"
             print(log_info)
-            to_add = "MY SWEET HEART, PLEASE DO NOT CHANGE THE ORIGINAL TEXT, JUST ADD TAGS, PLEASE. CAN YOU DO THAT AGAIN!"
-            to_add_2 = "Should be like something original text <error>original text</error> original text"
-            meow = qwen.ask(prompt_user + log_info + to_add, prompt_system)        
+            meow = ask(prompt_user + log_info + prompt_redo)        
+
+            # to prevent loop
+            #modify this part make it more concise
+            cnt += 1
+            if cnt > 10:
+                meow = prompt_user
+                break
+            
         meow_lst.append(meow)
+    return meow_lst
 
-    def transform_text_list_with_mark_into_output_file(input_cor: List[str], text_lst: List[str], mark:m.Mark):
-        output_lst = []
-        input_and_output = zip(input_cor, text_lst)
-        for tu in input_and_output:
-            #get the hard_label i.e. [[12, 34], [34, 55] ...]
-            #tu[1] text, tu[1] cor_input
-            hard_labels = m.starts_and_ends(tu[1], mark)
-            #TODO I dont know how to deal with the fucking soft labels, just blank
-            #There soft label is empty, and hash_labels is just we got above.
-            soft_labels = []
-            for hard_label in hard_labels:
-                soft_labels.append(dp.SoftLabel({"start": hard_label[0], "prob": 1.0, "end":hard_label[1]}))
-            labels = dp.Labels(soft_labels=soft_labels, hard_labels=hard_labels)
-            #We need to put the input we use, too!
-            #one instance
-            output_one = dp.Output(tu[0] | labels)
-            #add it to the list
-            output_lst.append(output_one)
-        #put them into a file!, you can specific the file_name actually
-        timestampe = datetime.now().strftime("%Y%m%d_%H%M%S")
-        dp.save_file_output(output_lst, "./output/" + model_name + "_" + file_name + timestampe + str(random.randint(0, 1000)) + ".jsonl") 
 
-    #do it!
-    # Here you should use your own mark! not m.T
+def transform_text_list_with_mark_into_output_file(input_cor: List[str], text_lst: List[str], mark:m.Mark):
+    output_lst = []
+    input_and_output = zip(input_cor, text_lst)
+    for tu in input_and_output:
+        #get the hard_label i.e. [[12, 34], [34, 55] ...]
+        #tu[1] text, tu[1] cor_input
+        hard_labels = m.starts_and_ends(tu[1], mark)
+        #TODO I dont know how to deal with the fucking soft labels, just blank
+        #There soft label is empty, and hash_labels is just we got above.
+        soft_labels = []
+        for hard_label in hard_labels:
+            soft_labels.append(dp.SoftLabel({"start": hard_label[0], "prob": 1.0, "end":hard_label[1]}))
+        labels = dp.Labels(soft_labels=soft_labels, hard_labels=hard_labels)
+        #We need to put the input we use, too!
+        #one instance
+        output_one = dp.Output(tu[0] | labels)
+        #add it to the list
+        output_lst.append(output_one)
+    #put them into a file!, you can specific the file_name actually
+
+    timestampe = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = "./output/" 
+    output_filename = model_name + "_" + file_name + timestampe + str(random.randint(0, 1000))
+    suffix = ".jsonl"
+    full_output_filename = output_lst, output_dir + output_filename + suffix 
+    dp.save_file_output(full_output_filename) 
+
+def do(file_name):
+    mask = m.Mark("error")
+    input_lst = load(file_name)
+    prompt_user_lst = list(input["model_output_text"] for input in input_lst)
+    meow_lst = ask_it(prompt_user_lst)
     transform_text_list_with_mark_into_output_file(input_lst, meow_lst, mask)
+
 for file_name in file_list:
     do(file_name)
+
+
+
+

@@ -1,6 +1,7 @@
 from typing import List, TypedDict
 import unittest
 from .data_processing import HardLabel
+import difflib
 
 
 # To register a Mark: T = Mark('T')
@@ -73,7 +74,27 @@ def starts_and_ends(text: str, trunc_mark:Mark)-> List[HardLabel]:
             start += len(item)
     return hard_label_lst
      
-     
+
+def find_char_differences(string1, string2):
+    # 使用 ndiff 来比较两个字符串，按字符比较
+    diff = difflib.ndiff(string1, string2)
+
+    # 记录不同之处
+    differences = []
+
+    for i, change in enumerate(diff):
+        if change.startswith('- ') or change.startswith('+ '):
+            differences.append((i, change))
+
+    return differences
+
+def add_and_sub_cha(modify_lst, text:str):
+    text_copy = text[:]
+    for (pos, change) in modify_lst:
+        add_or_sub = chagne[0]
+        ch = change[2]
+        text_copy 
+
 
 # this is domain of test_function
 class TestExample(unittest.TestCase):
