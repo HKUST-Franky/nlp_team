@@ -42,6 +42,7 @@ class ChatLLM():
                 {'role': 'system', 'content': input_system},
                 {'role': 'user', 'content': input_user}
             ],
+            temperature=0.1,
         )
         json_str = completion.model_dump_json()
 
