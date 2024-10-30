@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, TypedDict
 import unittest
 
-data_file_path = "./input_data/mushroom.hi-val.v2.jsonl"
+data_file_path = "./input_data/en.jsonl"
 output_path = "./output/"
 # to constrain the type of the dic
 # This is data input
