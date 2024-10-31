@@ -3,10 +3,10 @@ import pandas as pd
 import re
 
 # Manual check File for the output of the model
-with open("test/output_en_manual.json", "r", encoding="utf-8") as f:
+with open("test/de.json", "r", encoding="utf-8") as f:
     pred_dicts = json.load(f)
 
-df = pd.read_json("input_data/en.jsonl", lines=True)
+df = pd.read_json("input_data/de.jsonl", lines=True)
 ref = df["model_output_text"]
 
 labels_lst = []
@@ -33,4 +33,4 @@ for i in range(len(df_val)):
     df_val.at[i, "soft_labels"] = labels_lst[i][0]
     df_val.at[i, "hard_labels"] = labels_lst[i][1]
 # output file for results
-df_val.to_json("test/rs_en.json", orient="records", lines=True)
+df_val.to_json("test/rs_de.json", orient="records", lines=True)
