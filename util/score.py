@@ -64,10 +64,18 @@ def score_cor(ref_dict, pred_dict):
     pred_vec = [0.] * ref_dict['text_len']
     for span in ref_dict['soft_labels']:
         for idx in range(span['start'], span['end']):
-            ref_vec[idx] = span['prob']
+            if 0 <= idx < ref_dict['text_len']:
+                ref_vec[idx] = span['prob']
+            else:
+                # continue
+                print(f"Warning: reference span {span} is out of bounds for text of length {ref_dict['text_len']}")
     for span in pred_dict['soft_labels']:
         for idx in range(span['start'], span['end']):
-            pred_vec[idx] = span['prob']
+                if 0 <= idx < ref_dict['text_len']:
+                    pred_vec[idx] = span['prob']
+                else:
+                    # continue
+                    print(f"Warning: prediction span {span} is out of bounds for text of length {ref_dict['text_len']}")
     # constant series (i.e., no hallucination) => cor is undef
     if len({round(flt, 8) for flt in pred_vec}) == 1 or len({round(flt, 8) for flt in ref_vec}) == 1 : 
         return float(len({round(flt, 8) for flt in ref_vec}) == len({round(flt, 8) for flt in pred_vec}))
